@@ -7,23 +7,23 @@
 
 // initialize tic-tac-toe gameboard;
 
-const ticTacToeModule = (function () {
+const Gameboard = (function () {
     let gameBoard = [
         [' ', ' ', ' '],
         [' ', ' ', ' '],
         [' ', ' ', ' ']
     ];
 
-    function displayGameBoard() {
+    function displayBoard() {
         for (let row of gameBoard) {
             console.log(row.join(' '));
         }
     }
 
-    function makeMove(row, col, player) {
+    function makeMove(row, col, symbol) {
         if (gameBoard[row][col] === ' ') {
-            gameBoard[row][col] = player;
-            displayGameBoard();
+            gameBoard[row][col] = symbol;
+            displayBoard();
         } else {
             console.log('Invalid move. Choose another cell.');
         }
@@ -38,9 +38,60 @@ const ticTacToeModule = (function () {
         console.log('Game Board has been reset'); 
     }
 
-    return { displayGameBoard, makeMove, resetBoard };
+    return { displayBoard, makeMove, resetBoard };
 })();
 
-ticTacToeModule.displayGameBoard();
-ticTacToeModule.makeMove(0, 1, 'X');
-ticTacToeModule.makeMove(1, 0, 'O');
+// initialize player
+
+const Player = function (name, symbol) {
+    return { name, symbol };
+};
+
+// initialize game GameController factory
+
+const GameController = (() => {
+    let player1;
+    let player2;
+    let currentPlayer;
+
+    const switchPlayer = () => {
+        currentPlayer = currentPlayer === player1 ? player2 : player1;
+    };
+
+    const startGame = (player1Name, player2Name) => {
+        player1 = Player(player1Name, 'X');
+        player2 = Player(player2Name, 'O');
+        currentPlayer = player1;
+        console.log('Game started. ' + currentPlayer.name + ' goes first.');
+        Gameboard.displayBoard();
+    };
+
+    const playerMove = (row, col) => {
+        Gameboard.makeMove(row, col, currentPlayer.symbol);
+        switchPlayer();
+        console.log(currentPlayer.name + "'s turn.")
+    };
+
+    const resetGame = () => {
+        Gameboard.resetBoard();
+        player1 = null;
+        player2 = null;
+        currentPlayer = null;
+        console.log('Game reset');
+    };
+
+    return { startGame, playerMove, resetGame };
+})();
+
+
+GameController.startGame('Max', 'Atlas');
+GameController.playerMove(0, 0);
+GameController.playerMove(0, 1);
+GameController.playerMove(0, 2);
+GameController.playerMove(1, 0);
+GameController.playerMove(1, 1);
+GameController.playerMove(1, 2);
+GameController.playerMove(2, 0);
+GameController.playerMove(2, 1);
+GameController.playerMove(2, 2);
+GameController.resetGame();
