@@ -7,78 +7,82 @@
 
 // initialize tic-tac-toe gameboard;
 
-const Gameboard = (function () {
+const GameBoard = (() => {
     let gameBoard = [
         [' ', ' ', ' '],
         [' ', ' ', ' '],
         [' ', ' ', ' ']
     ];
 
-    function displayBoard() {
+    const displayBoard = () => {
         for (let row of gameBoard) {
             console.log(row.join(' '));
-        }
-    }
+        };
+    };
 
-    function makeMove(row, col, symbol) {
+    const makeMove = (row, col, symbol) => {
         if (gameBoard[row][col] === ' ') {
             gameBoard[row][col] = symbol;
             displayBoard();
         } else {
-            console.log('Invalid move. Choose another cell.');
-        }
-    }
+            console.log('Invalid move. Please choose another');
+            return -1;
+        };
+    };
 
-    function resetBoard() {
+    const resetBoard = () => {
         gameBoard = [
             [' ', ' ', ' '],
             [' ', ' ', ' '],
             [' ', ' ', ' ']
         ];
-        console.log('Game Board has been reset'); 
     }
 
     return { displayBoard, makeMove, resetBoard };
 })();
 
-// initialize player
+// initialize Player
 
-const Player = function (name, symbol) {
-    return { name, symbol };
-};
+const Player = ((name, symbol) => {
+    return { 
+        name,
+        symbol 
+    };
+});
 
-// initialize game GameController factory
+// initialize GameController logic
 
 const GameController = (() => {
     let player1;
     let player2;
     let currentPlayer;
 
-    const switchPlayer = () => {
-        currentPlayer = currentPlayer === player1 ? player2 : player1;
-    };
-
-    const startGame = (player1Name, player2Name) => {
-        player1 = Player(player1Name, 'X');
-        player2 = Player(player2Name, 'O');
+    const startGame = (player1name, player2name) => {
+        player1 = Player(player1name, "X");
+        player2 = Player(player2name, "Y");
         currentPlayer = player1;
-        console.log('Game started. ' + currentPlayer.name + ' goes first.');
-        Gameboard.displayBoard();
+        console.log('Game start. ' + currentPlayer.name + ' goes first.')
+        GameBoard.displayBoard();
     };
 
     const playerMove = (row, col) => {
-        Gameboard.makeMove(row, col, currentPlayer.symbol);
-        switchPlayer();
-        console.log(currentPlayer.name + "'s turn.")
+        let move = GameBoard.makeMove(row, col, currentPlayer.symbol);
+        // only switches player if move was valid
+        if (move !== -1) {
+            switchPlayer();
+        }
+        console.log(currentPlayer.name + "'s turn.");
+
     };
 
+    const switchPlayer = () => currentPlayer = currentPlayer === player1 ? player2 : player1;
+
     const resetGame = () => {
-        Gameboard.resetBoard();
+        GameBoard.resetBoard();
         player1 = null;
         player2 = null;
         currentPlayer = null;
-        console.log('Game reset');
-    };
+    }
 
     return { startGame, playerMove, resetGame };
 })();
@@ -86,12 +90,13 @@ const GameController = (() => {
 
 GameController.startGame('Max', 'Atlas');
 GameController.playerMove(0, 0);
+GameController.playerMove(0, 0);
+GameController.playerMove(0, 0);
 GameController.playerMove(0, 1);
 GameController.playerMove(0, 2);
-GameController.playerMove(1, 0);
-GameController.playerMove(1, 1);
-GameController.playerMove(1, 2);
-GameController.playerMove(2, 0);
-GameController.playerMove(2, 1);
-GameController.playerMove(2, 2);
-GameController.resetGame();
+GameController.playerMove(0, 2);
+
+
+
+
+
