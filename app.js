@@ -38,7 +38,7 @@ const GameBoard = (() => {
         ];
     }
 
-    return { displayBoard, makeMove, resetBoard };
+    return { displayBoard, makeMove, resetBoard, gameBoard };
 })();
 
 // initialize Player
@@ -67,6 +67,7 @@ const GameController = (() => {
 
     const playerMove = (row, col) => {
         let move = GameBoard.makeMove(row, col, currentPlayer.symbol);
+        winner();
         // only switches player if move was valid
         if (move !== -1) {
             switchPlayer();
@@ -84,17 +85,54 @@ const GameController = (() => {
         currentPlayer = null;
     }
 
+    // checks for winner row, col, and diagonal
+    const winner = () => {
+        // check rows
+        for (let row = 0; row < 3; row++) {
+            if (
+                GameBoard.gameBoard[row][0] === currentPlayer.symbol &&
+                GameBoard.gameBoard[row][1] === currentPlayer.symbol &&
+                GameBoard.gameBoard[row][2] === currentPlayer.symbol
+            ) {
+                console.log(currentPlayer.name + ' has won row');
+            }
+        }
+
+        // check columns
+        for (let col = 0; col < 3; col++) {
+            if (
+                GameBoard.gameBoard[0][col] === currentPlayer.symbol &&
+                GameBoard.gameBoard[1][col] === currentPlayer.symbol &&
+                GameBoard.gameBoard[2][col] === currentPlayer.symbol
+            ) {
+                console.log(currentPlayer.name + ' has won column');
+            }
+        }
+
+        // check diagonal
+        if (
+            GameBoard.gameBoard[0][0] === currentPlayer.symbol &&
+            GameBoard.gameBoard[1][1] === currentPlayer.symbol &&
+            GameBoard.gameBoard[2][2] === currentPlayer.symbol ||
+            GameBoard.gameBoard[0][2] === currentPlayer.symbol &&
+            GameBoard.gameBoard[1][2] === currentPlayer.symbol &&
+            GameBoard.gameBoard[2][0] === currentPlayer.symbol
+        ) {
+            console.log(currentPlayer.name + ' won diagonal');
+        }
+    }
+
     return { startGame, playerMove, resetGame };
 })();
 
 
 GameController.startGame('Max', 'Atlas');
 GameController.playerMove(0, 0);
-GameController.playerMove(0, 0);
-GameController.playerMove(0, 0);
+GameController.playerMove(1, 1);
+GameController.playerMove(1, 0);
 GameController.playerMove(0, 1);
-GameController.playerMove(0, 2);
-GameController.playerMove(0, 2);
+GameController.playerMove(2, 0);
+GameController.playerMove(1, 2);
 
 
 
