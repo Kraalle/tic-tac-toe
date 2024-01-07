@@ -1,10 +1,3 @@
-// 1. intialize board
-// 2. create function that allows user to choose x or o
-// 3. create function that allows user to choose spot on board
-// 4. create function that allows computer to choose spot on board
-// 5. create function that identifies winner
-// 6. create function that identifies game over
-
 // initialize tic-tac-toe gameboard;
 
 const GameBoard = (() => {
@@ -30,6 +23,18 @@ const GameBoard = (() => {
         };
     };
 
+    const allTilesPlayed = () => {
+        for (let row of gameBoard) {
+            for (let cell of row) {
+                if (cell === ' ') {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     const resetBoard = () => {
         gameBoard = [
             [' ', ' ', ' '],
@@ -38,7 +43,7 @@ const GameBoard = (() => {
         ];
     }
 
-    return { displayBoard, makeMove, resetBoard, gameBoard };
+    return { displayBoard, makeMove, resetBoard, gameBoard, allTilesPlayed };
 })();
 
 // initialize Player
@@ -56,6 +61,7 @@ const GameController = (() => {
     let player1;
     let player2;
     let currentPlayer;
+    let gameActive = true;
 
     const startGame = (player1name, player2name) => {
         player1 = Player(player1name, "X");
@@ -66,14 +72,17 @@ const GameController = (() => {
     };
 
     const playerMove = (row, col) => {
-        let move = GameBoard.makeMove(row, col, currentPlayer.symbol);
-        winner();
-        // only switches player if move was valid
-        if (move !== -1) {
-            switchPlayer();
+        if (gameActive) {
+            let move = GameBoard.makeMove(row, col, currentPlayer.symbol);
+            winner();
+            // only switches player if move was valid
+            if (move !== -1) {
+                switchPlayer();
+            }
+            if (gameActive) {
+                console.log(currentPlayer.name + "'s turn.");
+            }
         }
-        console.log(currentPlayer.name + "'s turn.");
-
     };
 
     const switchPlayer = () => currentPlayer = currentPlayer === player1 ? player2 : player1;
@@ -83,10 +92,19 @@ const GameController = (() => {
         player1 = null;
         player2 = null;
         currentPlayer = null;
+        gameActive = true;
+    }
+
+    const endGame = () => {
+        gameActive = false;
     }
 
     // checks for winner row, col, and diagonal
     const winner = () => {
+        if (GameBoard.allTilesPlayed()) {
+            console.log("It's a tie!");
+            endGame();
+        }
         // check rows
         for (let row = 0; row < 3; row++) {
             if (
@@ -95,6 +113,7 @@ const GameController = (() => {
                 GameBoard.gameBoard[row][2] === currentPlayer.symbol
             ) {
                 console.log(currentPlayer.name + ' has won row');
+                endGame();
             }
         }
 
@@ -106,6 +125,7 @@ const GameController = (() => {
                 GameBoard.gameBoard[2][col] === currentPlayer.symbol
             ) {
                 console.log(currentPlayer.name + ' has won column');
+                endGame();
             }
         }
 
@@ -115,10 +135,11 @@ const GameController = (() => {
             GameBoard.gameBoard[1][1] === currentPlayer.symbol &&
             GameBoard.gameBoard[2][2] === currentPlayer.symbol ||
             GameBoard.gameBoard[0][2] === currentPlayer.symbol &&
-            GameBoard.gameBoard[1][2] === currentPlayer.symbol &&
+            GameBoard.gameBoard[1][1] === currentPlayer.symbol &&
             GameBoard.gameBoard[2][0] === currentPlayer.symbol
         ) {
             console.log(currentPlayer.name + ' won diagonal');
+            endGame();
         }
     }
 
@@ -128,11 +149,15 @@ const GameController = (() => {
 
 GameController.startGame('Max', 'Atlas');
 GameController.playerMove(0, 0);
-GameController.playerMove(1, 1);
-GameController.playerMove(1, 0);
 GameController.playerMove(0, 1);
-GameController.playerMove(2, 0);
+GameController.playerMove(0, 2);
+GameController.playerMove(1, 0);
+GameController.playerMove(1, 1);
 GameController.playerMove(1, 2);
+GameController.playerMove(2, 0);
+GameController.playerMove(2, 1);
+GameController.playerMove(2, 2);
+
 
 
 
