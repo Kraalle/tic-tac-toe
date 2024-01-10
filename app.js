@@ -65,11 +65,16 @@ const GameController = (() => {
 
     const startGame = (player1name, player2name) => {
         player1 = Player(player1name, "X");
-        player2 = Player(player2name, "Y");
+        player2 = Player(player2name, "O");
         currentPlayer = player1;
         console.log('Game start. ' + currentPlayer.name + ' goes first.')
         GameBoard.displayBoard();
     };
+
+    const getCurrentPlayer = () => {
+        return currentPlayer ? currentPlayer : '';
+    };
+
 
     const playerMove = (row, col) => {
         if (gameActive) {
@@ -100,7 +105,7 @@ const GameController = (() => {
     }
 
     // checks for winner row, col, and diagonal
-    const winner = () => {
+    const winner = () => { 
         if (GameBoard.allTilesPlayed()) {
             console.log("It's a tie!");
             endGame();
@@ -143,21 +148,41 @@ const GameController = (() => {
         }
     }
 
-    return { startGame, playerMove, resetGame };
+    const getGameStatus = () => {
+        return gameActive;
+    }
+
+    return { startGame, playerMove, resetGame, getCurrentPlayer, getGameStatus };
+})();
+
+const displayController = (() => {
+    const gameTiles = document.querySelectorAll('.game-tile');
+    const currentPlayerSpan = document.querySelector('.currentPlayer');
+
+    gameTiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+            const row = tile.dataset.row;
+            const col = tile.dataset.col;
+            GameController.playerMove(row, col);
+            updateTurnIndicator();
+        })
+    });
+
+    const updateTurnIndicator = () => {
+        currentPlayerSpan.textContent = GameController.getCurrentPlayer().name;
+    };
+
+    const updateTile = () => {
+        return GameController.getCurrentPlayer().symbol;
+    }
+
+    return { gameTiles, updateTurnIndicator };
+
 })();
 
 
 GameController.startGame('Max', 'Atlas');
-GameController.playerMove(0, 0);
-GameController.playerMove(0, 1);
-GameController.playerMove(0, 2);
-GameController.playerMove(1, 0);
-GameController.playerMove(1, 1);
-GameController.playerMove(1, 2);
-GameController.playerMove(2, 0);
-GameController.playerMove(2, 1);
-GameController.playerMove(2, 2);
-
+// displayController.updateTurnIndicator();
 
 
 
