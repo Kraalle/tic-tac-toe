@@ -155,14 +155,16 @@ const GameController = (() => {
     return { startGame, playerMove, resetGame, getCurrentPlayer, getGameStatus };
 })();
 
-const displayController = (() => {
+const DisplayController = (() => {
     const gameTiles = document.querySelectorAll('.game-tile');
     const currentPlayerSpan = document.querySelector('.currentPlayer');
+
 
     gameTiles.forEach(tile => {
         tile.addEventListener('click', () => {
             const row = tile.dataset.row;
             const col = tile.dataset.col;
+            tile.textContent = GameController.getCurrentPlayer().symbol;
             GameController.playerMove(row, col);
             updateTurnIndicator();
         })
@@ -172,17 +174,13 @@ const displayController = (() => {
         currentPlayerSpan.textContent = GameController.getCurrentPlayer().name;
     };
 
-    const updateTile = () => {
-        return GameController.getCurrentPlayer().symbol;
-    }
-
     return { gameTiles, updateTurnIndicator };
 
 })();
 
 
 GameController.startGame('Max', 'Atlas');
-// displayController.updateTurnIndicator();
+// DisplayController.updateTurnIndicator();
 
 
 
